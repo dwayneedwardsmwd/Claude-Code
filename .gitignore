@@ -1,0 +1,12 @@
+# Android build artifacts
+android-app/.gradle/
+android-app/build/
+*.iml
+.idea/
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
