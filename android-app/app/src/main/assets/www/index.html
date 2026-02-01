@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWD Engineer Toolbox</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a365d">
+    <meta name="description" content="MWD Engineer Toolbox - Poppit orifice selections, pipe connections, and drilling calculations">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>MWD Engineer Toolbox</h1>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav id="mainNav" class="nav-closed">
+        <ul>
+            <li><a href="#" data-section="home" class="active">Home</a></li>
+            <li><a href="#" data-section="poppit">Poppit Orifice Selection</a></li>
+            <li><a href="#" data-section="connections">Pipe Connections</a></li>
+            <li><a href="#" data-section="hydraulics">Hydraulics</a></li>
+            <li><a href="#" data-section="annular">Annular Calculations</a></li>
+            <li><a href="#" data-section="ecd">ECD Calculator</a></li>
+            <li><a href="#" data-section="pump">Pump Output</a></li>
+            <li><a href="#" data-section="nozzle">Bit Nozzle/TFA</a></li>
+            <li><a href="#" data-section="mudweight">Mud Weight Conversions</a></li>
+            <li><a href="#" data-section="tripslug">Trip/Slug Calculator</a></li>
+        </ul>
+    </nav>
+
+    <main id="mainContent">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="card">
+                <h2>Welcome to MWD Engineer Toolbox</h2>
+                <p>Your comprehensive toolkit for Measurement While Drilling calculations and reference charts.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card" data-goto="poppit">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>Poppit Orifice Selection</h3>
+                        <p>Select the correct orifice size based on flow rate and pressure requirements</p>
+                    </div>
+                    <div class="feature-card" data-goto="connections">
+                        <div class="feature-icon">🔗</div>
+                        <h3>Pipe Connections</h3>
+                        <p>API connection conversion charts and specifications</p>
+                    </div>
+                    <div class="feature-card" data-goto="hydraulics">
+                        <div class="feature-icon">💧</div>
+                        <h3>Hydraulics</h3>
+                        <p>Pressure loss, flow rate, and velocity calculations</p>
+                    </div>
+                    <div class="feature-card" data-goto="annular">
+                        <div class="feature-icon">📊</div>
+                        <h3>Annular Calculations</h3>
+                        <p>Volume, velocity, and bottoms-up time</p>
+                    </div>
+                    <div class="feature-card" data-goto="ecd">
+                        <div class="feature-icon">⚖️</div>
+                        <h3>ECD Calculator</h3>
+                        <p>Equivalent Circulating Density calculations</p>
+                    </div>
+                    <div class="feature-card" data-goto="pump">
+                        <div class="feature-icon">🔧</div>
+                        <h3>Pump Output</h3>
+                        <p>Calculate pump output and strokes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Poppit Orifice Selection Section -->
+        <section id="poppit" class="section">
+            <div class="card">
+                <h2>Poppit Orifice Selection</h2>
+                <p class="section-desc">Select the appropriate poppit orifice based on your flow rate and pressure requirements.</p>
+
+                <div class="calculator">
+                    <div class="input-group">
+                        <label for="poppitFlowRate">Flow Rate (GPM)</label>
+                        <input type="number" id="poppitFlowRate" placeholder="Enter flow rate" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="poppitPressure">Available Pressure Drop (PSI)</label>
+                        <input type="number" id="poppitPressure" placeholder="Enter pressure drop" step="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="poppitMudWeight">Mud Weight (PPG)</label>
+                        <input type="number" id="poppitMudWeight" placeholder="Enter mud weight" step="0.1" value="10">
+                    </div>
+                    <button class="btn-primary" id="calcPoppit">Calculate Recommended Orifice</button>
+
+                    <div id="poppitResult" class="result-box"></div>
+                </div>
+
+                <h3>Standard Poppit Orifice Reference Chart</h3>
+                <div class="table-responsive">
+                    <table class="data-table" id="poppitTable">
+                        <thead>
+                            <tr>
+                                <th>Orifice Size (inches)</th>
+                                <th>Orifice Size (32nds)</th>
+                                <th>Area (in²)</th>
+                                <th>Cv Factor</th>
+                                <th>Typical Flow Range (GPM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipe Connections Section -->
+        <section id="connections" class="section">
+            <div class="card">
+                <h2>Pipe Connection Conversion Charts</h2>
+                <p class="section-desc">API rotary shouldered connection specifications and dimensions.</p>
+
+                <div class="filter-group">
+                    <label for="connectionFilter">Filter by Type:</label>
+                    <select id="connectionFilter">
+                        <option value="all">All Connections</option>
+                        <option value="NC">NC (Numbered Connection)</option>
+                        <option value="IF">IF (Internal Flush)</option>
+                        <option value="FH">FH (Full Hole)</option>
+                        <option value="REG">REG (Regular)</option>
+                        <option value="PAC">PAC (Slim Hole)</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="connectionsTable">
+                        <thead>
+                            <tr>
+                                <th>Connection</th>
+                                <th>OD (in)</th>
+                                <th>ID (in)</th>
+                                <th>TPI</th>
+                                <th>Taper (in/ft)</th>
+                                <th>Pin Length (in)</th>
+                                <th>Box ID (in)</th>
+                                <th>Interchange</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Common Connection Interchanges</h3>
+                <div class="info-box">
+                    <ul>
+                        <li><strong>NC50</strong> ↔ XH (4-1/2 IF)</li>
+                        <li><strong>NC46</strong> ↔ 4 IF</li>
+                        <li><strong>NC38</strong> ↔ 3-1/2 IF</li>
+                        <li><strong>NC31</strong> ↔ 2-7/8 IF</li>
+                        <li><strong>NC26</strong> ↔ 2-3/8 IF</li>
+                        <li><strong>6-5/8 REG</strong> ↔ 6-5/8 FH</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hydraulics Section -->
+        <section id="hydraulics" class="section">
+            <div class="card">
+                <h2>Hydraulics Calculator</h2>
+                <p class="section-desc">Calculate pressure losses, flow velocities, and hydraulic parameters.</p>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="pipeLoss">Pipe Pressure Loss</button>
+                        <button class="tab-btn" data-tab="annularLoss">Annular Pressure Loss</button>
+                        <button class="tab-btn" data-tab="criticalVel">Critical Velocity</button>
+                    </div>
+
+                    <div class="tab-content active" id="pipeLoss">
+                        <div class="calculator">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="pipeLossMW">Mud Weight (PPG)</label>
+                                    <input type="number" id="pipeLossMW" value="10" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="pipeLossFlow">Flow Rate (GPM)</label>
+                                    <input type="number" id="pipeLossFlow" value="400" step="10">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="pipeLossID">Pipe ID (inches)</label>
+                                    <input type="number" id="pipeLossID" value="4.276" step="0.001">
+                                </div>
+                                <div class="input-group">
+                                    <label for="pipeLossLength">Pipe Length (ft)</label>
+                                    <input type="number" id="pipeLossLength" value="10000" step="100">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="pipeLossPV">Plastic Viscosity (cP)</label>
+                                    <input type="number" id="pipeLossPV" value="15" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="pipeLossYP">Yield Point (lb/100ft²)</label>
+                                    <input type="number" id="pipeLossYP" value="10" step="1">
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="calcPipeLoss">Calculate</button>
+                            <div id="pipeLossResult" class="result-box"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="annularLoss">
+                        <div class="calculator">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="annLossMW">Mud Weight (PPG)</label>
+                                    <input type="number" id="annLossMW" value="10" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="annLossFlow">Flow Rate (GPM)</label>
+                                    <input type="number" id="annLossFlow" value="400" step="10">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="annLossHoleID">Hole/Casing ID (inches)</label>
+                                    <input type="number" id="annLossHoleID" value="8.5" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="annLossPipeOD">Pipe OD (inches)</label>
+                                    <input type="number" id="annLossPipeOD" value="5" step="0.1">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="annLossLength">Length (ft)</label>
+                                    <input type="number" id="annLossLength" value="10000" step="100">
+                                </div>
+                                <div class="input-group">
+                                    <label for="annLossPV">Plastic Viscosity (cP)</label>
+                                    <input type="number" id="annLossPV" value="15" step="1">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="annLossYP">Yield Point (lb/100ft²)</label>
+                                <input type="number" id="annLossYP" value="10" step="1">
+                            </div>
+                            <button class="btn-primary" id="calcAnnLoss">Calculate</button>
+                            <div id="annLossResult" class="result-box"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="criticalVel">
+                        <div class="calculator">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="critVelMW">Mud Weight (PPG)</label>
+                                    <input type="number" id="critVelMW" value="10" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="critVelPV">Plastic Viscosity (cP)</label>
+                                    <input type="number" id="critVelPV" value="15" step="1">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="critVelYP">Yield Point (lb/100ft²)</label>
+                                    <input type="number" id="critVelYP" value="10" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="critVelDia">Hydraulic Diameter (in)</label>
+                                    <input type="number" id="critVelDia" value="4" step="0.1">
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="calcCritVel">Calculate</button>
+                            <div id="critVelResult" class="result-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Annular Calculations Section -->
+        <section id="annular" class="section">
+            <div class="card">
+                <h2>Annular Calculations</h2>
+                <p class="section-desc">Calculate annular volume, velocity, and bottoms-up time.</p>
+
+                <div class="calculator">
+                    <h3>Annular Volume & Velocity</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="annHoleID">Hole/Casing ID (inches)</label>
+                            <input type="number" id="annHoleID" value="8.5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="annPipeOD">Pipe OD (inches)</label>
+                            <input type="number" id="annPipeOD" value="5" step="0.1">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="annLength">Length (ft)</label>
+                            <input type="number" id="annLength" value="10000" step="100">
+                        </div>
+                        <div class="input-group">
+                            <label for="annFlowRate">Flow Rate (GPM)</label>
+                            <input type="number" id="annFlowRate" value="400" step="10">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcAnnular">Calculate</button>
+                    <div id="annularResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Bottoms Up Calculator</h3>
+                    <p>Add multiple annular sections to calculate total bottoms-up time.</p>
+
+                    <div id="bottomsUpSections">
+                        <div class="section-input" data-section="1">
+                            <h4>Section 1</h4>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label>Hole/Casing ID (in)</label>
+                                    <input type="number" class="buHoleID" value="8.5" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label>Pipe OD (in)</label>
+                                    <input type="number" class="buPipeOD" value="5" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label>Length (ft)</label>
+                                    <input type="number" class="buLength" value="5000" step="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" id="addSection">+ Add Section</button>
+
+                    <div class="input-group">
+                        <label for="buFlowRate">Flow Rate (GPM)</label>
+                        <input type="number" id="buFlowRate" value="400" step="10">
+                    </div>
+                    <button class="btn-primary" id="calcBottomsUp">Calculate Bottoms Up</button>
+                    <div id="bottomsUpResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ECD Calculator Section -->
+        <section id="ecd" class="section">
+            <div class="card">
+                <h2>ECD Calculator</h2>
+                <p class="section-desc">Calculate Equivalent Circulating Density based on annular pressure loss.</p>
+
+                <div class="calculator">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="ecdMW">Mud Weight (PPG)</label>
+                            <input type="number" id="ecdMW" value="10" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="ecdAnnPressure">Annular Pressure Loss (PSI)</label>
+                            <input type="number" id="ecdAnnPressure" value="200" step="10">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="ecdTVD">True Vertical Depth (ft)</label>
+                        <input type="number" id="ecdTVD" value="10000" step="100">
+                    </div>
+                    <button class="btn-primary" id="calcECD">Calculate ECD</button>
+                    <div id="ecdResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Hydrostatic Pressure</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="hpMW">Mud Weight (PPG)</label>
+                            <input type="number" id="hpMW" value="10" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="hpTVD">TVD (ft)</label>
+                            <input type="number" id="hpTVD" value="10000" step="100">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcHP">Calculate Hydrostatic</button>
+                    <div id="hpResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pump Output Section -->
+        <section id="pump" class="section">
+            <div class="card">
+                <h2>Pump Output Calculator</h2>
+                <p class="section-desc">Calculate pump output and strokes to surface.</p>
+
+                <div class="calculator">
+                    <h3>Triplex Pump Output</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="pumpLinerSize">Liner Size (inches)</label>
+                            <input type="number" id="pumpLinerSize" value="6.5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="pumpStrokeLength">Stroke Length (inches)</label>
+                            <input type="number" id="pumpStrokeLength" value="12" step="0.5">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="pumpEfficiency">Pump Efficiency (%)</label>
+                            <input type="number" id="pumpEfficiency" value="95" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="pumpSPM">Strokes Per Minute (SPM)</label>
+                            <input type="number" id="pumpSPM" value="60" step="1">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcPump">Calculate</button>
+                    <div id="pumpResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Strokes to Surface</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="stsVolume">Total Volume (bbl)</label>
+                            <input type="number" id="stsVolume" value="500" step="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="stsPumpOutput">Pump Output (bbl/stk)</label>
+                            <input type="number" id="stsPumpOutput" value="0.117" step="0.001">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="stsSPM">SPM</label>
+                        <input type="number" id="stsSPM" value="60" step="1">
+                    </div>
+                    <button class="btn-primary" id="calcSTS">Calculate</button>
+                    <div id="stsResult" class="result-box"></div>
+                </div>
+
+                <h3>Common Pump Liner Outputs</h3>
+                <div class="table-responsive">
+                    <table class="data-table" id="linerTable">
+                        <thead>
+                            <tr>
+                                <th>Liner (in)</th>
+                                <th>10" Stroke (bbl/stk)</th>
+                                <th>11" Stroke (bbl/stk)</th>
+                                <th>12" Stroke (bbl/stk)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bit Nozzle/TFA Section -->
+        <section id="nozzle" class="section">
+            <div class="card">
+                <h2>Bit Nozzle & TFA Calculator</h2>
+                <p class="section-desc">Calculate Total Flow Area and nozzle pressure drop.</p>
+
+                <div class="calculator">
+                    <h3>Nozzle Configuration</h3>
+                    <div class="nozzle-inputs">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="nozzle1">Nozzle 1 (32nds)</label>
+                                <input type="number" id="nozzle1" value="12" step="1" min="0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nozzle2">Nozzle 2 (32nds)</label>
+                                <input type="number" id="nozzle2" value="12" step="1" min="0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nozzle3">Nozzle 3 (32nds)</label>
+                                <input type="number" id="nozzle3" value="12" step="1" min="0">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="nozzle4">Nozzle 4 (32nds)</label>
+                                <input type="number" id="nozzle4" value="0" step="1" min="0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nozzle5">Nozzle 5 (32nds)</label>
+                                <input type="number" id="nozzle5" value="0" step="1" min="0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nozzle6">Nozzle 6 (32nds)</label>
+                                <input type="number" id="nozzle6" value="0" step="1" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="nozzleFlow">Flow Rate (GPM)</label>
+                            <input type="number" id="nozzleFlow" value="400" step="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="nozzleMW">Mud Weight (PPG)</label>
+                            <input type="number" id="nozzleMW" value="10" step="0.1">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcNozzle">Calculate</button>
+                    <div id="nozzleResult" class="result-box"></div>
+                </div>
+
+                <h3>Nozzle Size Quick Reference</h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Size (32nds)</th>
+                                <th>Inches</th>
+                                <th>Area (in²)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>8</td><td>0.250</td><td>0.0491</td></tr>
+                            <tr><td>9</td><td>0.281</td><td>0.0621</td></tr>
+                            <tr><td>10</td><td>0.313</td><td>0.0767</td></tr>
+                            <tr><td>11</td><td>0.344</td><td>0.0928</td></tr>
+                            <tr><td>12</td><td>0.375</td><td>0.1104</td></tr>
+                            <tr><td>13</td><td>0.406</td><td>0.1296</td></tr>
+                            <tr><td>14</td><td>0.438</td><td>0.1503</td></tr>
+                            <tr><td>15</td><td>0.469</td><td>0.1726</td></tr>
+                            <tr><td>16</td><td>0.500</td><td>0.1963</td></tr>
+                            <tr><td>18</td><td>0.563</td><td>0.2485</td></tr>
+                            <tr><td>20</td><td>0.625</td><td>0.3068</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mud Weight Conversions Section -->
+        <section id="mudweight" class="section">
+            <div class="card">
+                <h2>Mud Weight Conversions</h2>
+                <p class="section-desc">Convert between different mud weight units.</p>
+
+                <div class="calculator">
+                    <div class="input-group">
+                        <label for="mwInput">Enter Value</label>
+                        <input type="number" id="mwInput" value="10" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="mwUnit">Unit</label>
+                        <select id="mwUnit">
+                            <option value="ppg">PPG (lb/gal)</option>
+                            <option value="sg">Specific Gravity</option>
+                            <option value="pcf">PCF (lb/ft³)</option>
+                            <option value="kgm3">kg/m³</option>
+                            <option value="psi_ft">PSI/ft</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="calcMW">Convert</button>
+                    <div id="mwResult" class="result-box"></div>
+                </div>
+
+                <h3>Quick Reference</h3>
+                <div class="info-box">
+                    <ul>
+                        <li><strong>Fresh Water:</strong> 8.33 PPG = 1.0 SG</li>
+                        <li><strong>Sea Water:</strong> 8.55 PPG = 1.03 SG</li>
+                        <li><strong>Pressure Gradient:</strong> PPG × 0.052 = PSI/ft</li>
+                        <li><strong>Hydrostatic:</strong> PPG × 0.052 × TVD = PSI</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trip/Slug Calculator Section -->
+        <section id="tripslug" class="section">
+            <div class="card">
+                <h2>Trip & Slug Calculator</h2>
+                <p class="section-desc">Calculate trip margins, slug weights, and displacement volumes.</p>
+
+                <div class="calculator">
+                    <h3>Slug Calculator</h3>
+                    <p>Calculate slug weight and volume to achieve desired dry pipe length.</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="slugMW">Current Mud Weight (PPG)</label>
+                            <input type="number" id="slugMW" value="10" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="slugDryPipe">Desired Dry Pipe (ft)</label>
+                            <input type="number" id="slugDryPipe" value="500" step="50">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="slugPipeID">Drill Pipe ID (in)</label>
+                            <input type="number" id="slugPipeID" value="4.276" step="0.001">
+                        </div>
+                        <div class="input-group">
+                            <label for="slugLength">Slug Length in Pipe (ft)</label>
+                            <input type="number" id="slugLength" value="1000" step="100">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcSlug">Calculate Slug</button>
+                    <div id="slugResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Pipe Displacement</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="dispPipeOD">Pipe OD (in)</label>
+                            <input type="number" id="dispPipeOD" value="5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="dispPipeID">Pipe ID (in)</label>
+                            <input type="number" id="dispPipeID" value="4.276" step="0.001">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="dispLength">Length (ft)</label>
+                        <input type="number" id="dispLength" value="10000" step="100">
+                    </div>
+                    <button class="btn-primary" id="calcDisp">Calculate Displacement</button>
+                    <div id="dispResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Kill Weight Mud</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="kwmCurrentMW">Current Mud Weight (PPG)</label>
+                            <input type="number" id="kwmCurrentMW" value="10" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="kwmSIDP">SIDPP (PSI)</label>
+                            <input type="number" id="kwmSIDP" value="500" step="10">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="kwmTVD">TVD (ft)</label>
+                        <input type="number" id="kwmTVD" value="10000" step="100">
+                    </div>
+                    <button class="btn-primary" id="calcKWM">Calculate Kill Weight</button>
+                    <div id="kwmResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>MWD Engineer Toolbox v1.0 | For field reference only - verify all calculations</p>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
