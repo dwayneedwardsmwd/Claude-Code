@@ -5,29 +5,43 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Background -->
+    <!-- Black Background -->
     <path
-        android:fillColor="#1a365d"
+        android:fillColor="#000000"
         android:pathData="M0,0h108v108H0z" />
 
-    <!-- Drill pipe -->
+    <!-- Drill bit body - silver metallic -->
     <path
-        android:fillColor="#ed8936"
-        android:pathData="M46,16h16v56H46z" />
+        android:fillColor="#a0a0a0"
+        android:pathData="M42,14 L66,14 Q70,14 70,18 L70,60 Q65,78 54,94 Q43,78 38,60 L38,18 Q38,14 42,14 Z" />
 
-    <!-- Pipe threads -->
+    <!-- Spiral groove 1 -->
     <path
-        android:fillColor="#f6ad55"
-        android:pathData="M44,20h20v3H44zM44,32h20v3H44zM44,44h20v3H44z" />
+        android:fillColor="#505050"
+        android:pathData="M40,20 Q50,28 66,24 Q58,40 68,48 Q56,60 62,72 Q54,84 54,90"
+        android:strokeWidth="3"
+        android:strokeColor="#404040" />
 
-    <!-- Bit -->
+    <!-- Spiral groove 2 -->
     <path
-        android:fillColor="#f6ad55"
-        android:pathData="M54,72L40,90h28z" />
+        android:fillColor="#505050"
+        android:pathData="M68,20 Q58,28 42,24 Q50,40 40,48 Q52,60 46,72 Q54,84 54,90"
+        android:strokeWidth="3"
+        android:strokeColor="#404040" />
 
-    <!-- Nozzles -->
+    <!-- Highlight -->
     <path
-        android:fillColor="#1a365d"
-        android:pathData="M48,82a3,3 0,1 0,6 0a3,3 0,1 0,-6 0M54,86a3,3 0,1 0,6 0a3,3 0,1 0,-6 0M42,86a3,3 0,1 0,6 0a3,3 0,1 0,-6 0" />
+        android:fillColor="#c0c0c0"
+        android:pathData="M52,18 L56,18 L56,85 L52,85 Z" />
+
+    <!-- Top collar -->
+    <path
+        android:fillColor="#c8c8c8"
+        android:pathData="M36,12 h36 v6 h-36 z" />
+
+    <!-- Collar highlight -->
+    <path
+        android:fillColor="#e0e0e0"
+        android:pathData="M36,12 h36 v2 h-36 z" />
 
 </vector>

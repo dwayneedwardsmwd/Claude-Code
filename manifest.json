@@ -1,23 +1,17 @@
 {
-  "name": "MWD Engineer Toolbox",
-  "short_name": "MWD Toolbox",
-  "description": "Comprehensive toolkit for MWD Engineers - Poppit orifice selections, pipe connections, and drilling calculations",
+  "name": "TOOLTRONIX MWD Toolbox",
+  "short_name": "TOOLTRONIX",
+  "description": "TOOLTRONIX MWD Engineer Toolbox - Poppit orifice selections, pipe connections, and drilling calculations. Calgary, Canada.",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#1a365d",
-  "theme_color": "#1a365d",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "any",
   "icons": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],

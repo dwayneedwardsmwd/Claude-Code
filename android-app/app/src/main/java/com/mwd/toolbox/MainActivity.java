@@ -23,10 +23,11 @@ public class MainActivity extends Activity {
         // Remove title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Make status bar match app theme (for S24 Ultra and modern devices)
+        // Make status bar match Tooltronix theme (black)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(Color.parseColor("#1a365d"));
+            getWindow().setStatusBarColor(Color.parseColor("#000000"));
+            getWindow().setNavigationBarColor(Color.parseColor("#000000"));
         }
 
         // Set content view
