@@ -244,6 +244,30 @@ const App = {
 
         // Kill Weight Mud
         document.getElementById('calcKWM').addEventListener('click', () => this.calculateKWM());
+
+        // Survey/Directional Calculators
+        document.getElementById('calcDLS').addEventListener('click', () => this.calculateDLS());
+        document.getElementById('calcTF').addEventListener('click', () => this.calculateToolface());
+        document.getElementById('calcBT').addEventListener('click', () => this.calculateBuildTurn());
+        document.getElementById('calcProj').addEventListener('click', () => this.calculateProjection());
+
+        // Motor Yield Calculators
+        document.getElementById('calcSlide').addEventListener('click', () => this.calculateSlideSheet());
+        document.getElementById('calcMotorYield').addEventListener('click', () => this.calculateMotorYieldEstimate());
+        document.getElementById('calcExpBT').addEventListener('click', () => this.calculateExpectedBuildTurn());
+
+        // Magnetic Reference Calculators
+        document.getElementById('calcMagRef').addEventListener('click', () => this.calculateMagneticRef());
+        document.getElementById('calcAziConv').addEventListener('click', () => this.calculateAzimuthConversion());
+
+        // Unit Converters
+        document.getElementById('calcDecFrac').addEventListener('click', () => this.calculateDecFrac());
+        document.getElementById('calcLength').addEventListener('click', () => this.calculateLengthConversion());
+        document.getElementById('calcTemp').addEventListener('click', () => this.calculateTempConversion());
+        document.getElementById('calcPress').addEventListener('click', () => this.calculatePressConversion());
+
+        // BHA Reference
+        document.getElementById('calcSensorDepth').addEventListener('click', () => this.calculateSensorDepth());
     },
 
     /**
@@ -786,6 +810,444 @@ const App = {
             <div class="result-item">
                 <span class="result-label">Formation EMW</span>
                 <span class="result-value">${this.formatNumber(result.formationPPG)} PPG</span>
+            </div>
+        `);
+    },
+
+    // ===========================================
+    // SURVEY/DIRECTIONAL CALCULATORS
+    // ===========================================
+
+    calculateDLS: function() {
+        const inc1 = parseFloat(document.getElementById('dls1Inc').value);
+        const azi1 = parseFloat(document.getElementById('dls1Azi').value);
+        const inc2 = parseFloat(document.getElementById('dls2Inc').value);
+        const azi2 = parseFloat(document.getElementById('dls2Azi').value);
+        const cl = parseFloat(document.getElementById('dlsCL').value);
+
+        const result = Calculations.doglegSeverity(inc1, azi1, inc2, azi2, cl);
+
+        this.showResult('dlsResult', `
+            <h4>Dogleg Severity Results</h4>
+            <div class="highlight">
+                <strong>DLS: ${this.formatNumber(result.dls)} °/100ft</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Dogleg Angle</span>
+                <span class="result-value">${this.formatNumber(result.doglegAngle)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">DLS (per 30m)</span>
+                <span class="result-value">${this.formatNumber(result.dlsPer30m)} °/30m</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Course Length</span>
+                <span class="result-value">${cl} ft</span>
+            </div>
+        `);
+    },
+
+    calculateToolface: function() {
+        const inc = parseFloat(document.getElementById('tfInc').value);
+        const azi = parseFloat(document.getElementById('tfAzi').value);
+        const tf = parseFloat(document.getElementById('tfValue').value);
+        const type = document.getElementById('tfType').value;
+
+        const result = Calculations.convertToolface(inc, azi, tf, type);
+
+        this.showResult('tfResult', `
+            <h4>Toolface Conversion Results</h4>
+            <div class="highlight">
+                <strong>GTF: ${this.formatNumber(result.gtf)}°</strong><br>
+                <strong>MTF: ${this.formatNumber(result.mtf)}°</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Direction</span>
+                <span class="result-value">${result.direction}</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">At Inclination</span>
+                <span class="result-value">${inc}°</span>
+            </div>
+        `);
+    },
+
+    calculateBuildTurn: function() {
+        const inc1 = parseFloat(document.getElementById('bt1Inc').value);
+        const azi1 = parseFloat(document.getElementById('bt1Azi').value);
+        const inc2 = parseFloat(document.getElementById('bt2Inc').value);
+        const azi2 = parseFloat(document.getElementById('bt2Azi').value);
+        const cl = parseFloat(document.getElementById('btCL').value);
+
+        const result = Calculations.buildTurnRate(inc1, azi1, inc2, azi2, cl);
+
+        const buildDir = result.isBuilding ? 'Building' : 'Dropping';
+        const turnDir = result.isTurningRight ? 'Right' : 'Left';
+
+        this.showResult('btResult', `
+            <h4>Build & Turn Rate Results</h4>
+            <div class="highlight">
+                <strong>Build Rate: ${this.formatNumber(result.buildRate)} °/100ft</strong> (${buildDir})<br>
+                <strong>Turn Rate: ${this.formatNumber(result.turnRate)} °/100ft</strong> (${turnDir})
+            </div>
+            <div class="result-item">
+                <span class="result-label">Inc Change</span>
+                <span class="result-value">${this.formatNumber(result.incChange)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Azi Change</span>
+                <span class="result-value">${this.formatNumber(result.aziChange)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">DLS</span>
+                <span class="result-value">${this.formatNumber(result.dls)} °/100ft</span>
+            </div>
+        `);
+    },
+
+    calculateProjection: function() {
+        const inc = parseFloat(document.getElementById('projInc').value);
+        const azi = parseFloat(document.getElementById('projAzi').value);
+        const dls = parseFloat(document.getElementById('projDLS').value);
+        const tf = parseFloat(document.getElementById('projTF').value);
+        const dist = parseFloat(document.getElementById('projDist').value);
+
+        const result = Calculations.projectSurvey(inc, azi, dls, tf, dist);
+        const tfDirection = Calculations.getToolfaceDirection(tf);
+
+        this.showResult('projResult', `
+            <h4>Survey Projection Results</h4>
+            <div class="highlight">
+                <strong>Projected Inc: ${this.formatNumber(result.projectedInc)}°</strong><br>
+                <strong>Projected Azi: ${this.formatNumber(result.projectedAzi)}°</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Current Survey</span>
+                <span class="result-value">${inc}° / ${azi}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Toolface</span>
+                <span class="result-value">${tf}° (${tfDirection})</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Build Component</span>
+                <span class="result-value">${this.formatNumber(result.buildComponent)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Turn Component</span>
+                <span class="result-value">${this.formatNumber(result.turnComponent)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Projection Distance</span>
+                <span class="result-value">${dist} ft</span>
+            </div>
+        `);
+    },
+
+    // ===========================================
+    // MOTOR YIELD CALCULATORS
+    // ===========================================
+
+    calculateSlideSheet: function() {
+        const motorYield = parseFloat(document.getElementById('slideMotorYield').value);
+        const targetDLS = parseFloat(document.getElementById('slideTargetDLS').value);
+        const interval = parseFloat(document.getElementById('slideInterval').value);
+
+        const result = Calculations.slideCalculation(motorYield, targetDLS, interval);
+
+        this.showResult('slideResult', `
+            <h4>Slide Sheet Results</h4>
+            <div class="highlight">
+                <strong>Slide: ${this.formatNumber(result.slideFootage)} ft (${this.formatNumber(result.slidePercent)}%)</strong><br>
+                <strong>Rotate: ${this.formatNumber(result.rotateFootage)} ft</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Target DLS</span>
+                <span class="result-value">${targetDLS} °/100ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Motor Yield</span>
+                <span class="result-value">${motorYield} °/100ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Achievable DLS</span>
+                <span class="result-value">${this.formatNumber(result.achievableDLS)} °/100ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Drill Interval</span>
+                <span class="result-value">${interval} ft</span>
+            </div>
+        `);
+    },
+
+    calculateMotorYieldEstimate: function() {
+        const bendAngle = parseFloat(document.getElementById('bendAngle').value);
+        const bitToBend = parseFloat(document.getElementById('motorBitToBend').value);
+
+        const result = Calculations.estimateMotorYield(bendAngle, bitToBend);
+
+        this.showResult('motorYieldResult', `
+            <h4>Motor Yield Estimate</h4>
+            <div class="highlight">
+                <strong>Estimated Yield: ${this.formatNumber(result.estimatedYield)} °/100ft</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Range</span>
+                <span class="result-value">${this.formatNumber(result.minYield)} - ${this.formatNumber(result.maxYield)} °/100ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Bend Angle</span>
+                <span class="result-value">${bendAngle}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Bit to Bend</span>
+                <span class="result-value">${bitToBend} ft</span>
+            </div>
+            <div class="info-box" style="margin-top: 1rem;">
+                <strong>Note:</strong> ${result.note}
+            </div>
+        `);
+    },
+
+    calculateExpectedBuildTurn: function() {
+        const motorYield = parseFloat(document.getElementById('expMotorYield').value);
+        const tf = parseFloat(document.getElementById('expToolface').value);
+        const slideFootage = parseFloat(document.getElementById('expSlideFootage').value);
+
+        const result = Calculations.expectedBuildTurn(motorYield, tf, slideFootage);
+        const tfDirection = Calculations.getToolfaceDirection(tf);
+
+        this.showResult('expBTResult', `
+            <h4>Expected Build/Turn Results</h4>
+            <div class="highlight">
+                <strong>Expected Build: ${this.formatNumber(result.expectedBuild)}°</strong><br>
+                <strong>Expected Turn: ${this.formatNumber(result.expectedTurn)}°</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Toolface</span>
+                <span class="result-value">${tf}° (${tfDirection})</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Dogleg</span>
+                <span class="result-value">${this.formatNumber(result.totalDogleg)}°</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Build Rate</span>
+                <span class="result-value">${this.formatNumber(result.buildRate)} °/100ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Turn Rate</span>
+                <span class="result-value">${this.formatNumber(result.turnRate)} °/100ft</span>
+            </div>
+        `);
+    },
+
+    // ===========================================
+    // MAGNETIC REFERENCE CALCULATORS
+    // ===========================================
+
+    calculateMagneticRef: function() {
+        const dec = parseFloat(document.getElementById('magDeclination').value);
+        const conv = parseFloat(document.getElementById('magConvergence').value);
+
+        const result = Calculations.magneticReference(dec, conv);
+
+        this.showResult('magRefResult', `
+            <h4>Magnetic Reference Results</h4>
+            <div class="highlight">
+                <strong>Total Correction: ${this.formatNumber(result.totalCorrection)}°</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Declination</span>
+                <span class="result-value">${dec}° ${dec >= 0 ? '(East)' : '(West)'}</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Grid Convergence</span>
+                <span class="result-value">${conv}° ${conv >= 0 ? '(East)' : '(West)'}</span>
+            </div>
+            <div class="info-box" style="margin-top: 1rem;">
+                Grid Azi = Magnetic Azi + Total Correction
+            </div>
+        `);
+    },
+
+    calculateAzimuthConversion: function() {
+        const azi = parseFloat(document.getElementById('aziInput').value);
+        const type = document.getElementById('aziType').value;
+        const dec = parseFloat(document.getElementById('aziDec').value);
+        const conv = parseFloat(document.getElementById('aziConv').value);
+
+        const result = Calculations.convertAzimuth(azi, type, dec, conv);
+
+        this.showResult('aziConvResult', `
+            <h4>Azimuth Conversion Results</h4>
+            <div class="result-item ${type === 'mag' ? 'highlight' : ''}">
+                <span class="result-label">Magnetic Azimuth</span>
+                <span class="result-value">${this.formatNumber(result.magnetic)}°</span>
+            </div>
+            <div class="result-item ${type === 'true' ? 'highlight' : ''}">
+                <span class="result-label">True Azimuth</span>
+                <span class="result-value">${this.formatNumber(result.true)}°</span>
+            </div>
+            <div class="result-item ${type === 'grid' ? 'highlight' : ''}">
+                <span class="result-label">Grid Azimuth</span>
+                <span class="result-value">${this.formatNumber(result.grid)}°</span>
+            </div>
+        `);
+    },
+
+    // ===========================================
+    // UNIT CONVERTERS
+    // ===========================================
+
+    calculateDecFrac: function() {
+        const input = document.getElementById('decFracInput').value;
+        const denom = parseInt(document.getElementById('fracDenom').value);
+
+        // Try to determine if input is decimal or fraction
+        let result;
+        if (input.includes('/')) {
+            // Input is a fraction
+            const decimal = Calculations.fractionToDecimal(input);
+            result = Calculations.decimalToFraction(decimal, denom);
+            this.showResult('decFracResult', `
+                <h4>Fraction to Decimal Conversion</h4>
+                <div class="highlight">
+                    <strong>Decimal: ${this.formatNumber(decimal, 6)}</strong>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">As ${denom}nds</span>
+                    <span class="result-value">${result.thirtySeconds}/32</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Reduced</span>
+                    <span class="result-value">${result.display}</span>
+                </div>
+            `);
+        } else {
+            // Input is a decimal
+            const decimal = parseFloat(input);
+            result = Calculations.decimalToFraction(decimal, denom);
+            this.showResult('decFracResult', `
+                <h4>Decimal to Fraction Conversion</h4>
+                <div class="highlight">
+                    <strong>Fraction: ${result.display}</strong>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">As 32nds</span>
+                    <span class="result-value">${result.thirtySeconds}/32</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Exact Fraction</span>
+                    <span class="result-value">${result.numerator}/${result.denominator}</span>
+                </div>
+            `);
+        }
+    },
+
+    calculateLengthConversion: function() {
+        const value = parseFloat(document.getElementById('lengthInput').value);
+        const unit = document.getElementById('lengthUnit').value;
+
+        const result = Calculations.convertLength(value, unit);
+
+        this.showResult('lengthResult', `
+            <h4>Length Conversion Results</h4>
+            <div class="result-item ${unit === 'ft' ? 'highlight' : ''}">
+                <span class="result-label">Feet</span>
+                <span class="result-value">${this.formatNumber(result.feet, 4)}</span>
+            </div>
+            <div class="result-item ${unit === 'm' ? 'highlight' : ''}">
+                <span class="result-label">Meters</span>
+                <span class="result-value">${this.formatNumber(result.meters, 4)}</span>
+            </div>
+            <div class="result-item ${unit === 'in' ? 'highlight' : ''}">
+                <span class="result-label">Inches</span>
+                <span class="result-value">${this.formatNumber(result.inches, 4)}</span>
+            </div>
+            <div class="result-item ${unit === 'cm' ? 'highlight' : ''}">
+                <span class="result-label">Centimeters</span>
+                <span class="result-value">${this.formatNumber(result.centimeters, 4)}</span>
+            </div>
+        `);
+    },
+
+    calculateTempConversion: function() {
+        const value = parseFloat(document.getElementById('tempInput').value);
+        const unit = document.getElementById('tempUnit').value;
+
+        const result = Calculations.convertTemperature(value, unit);
+
+        this.showResult('tempResult', `
+            <h4>Temperature Conversion Results</h4>
+            <div class="result-item ${unit === 'f' ? 'highlight' : ''}">
+                <span class="result-label">Fahrenheit</span>
+                <span class="result-value">${this.formatNumber(result.fahrenheit, 2)} °F</span>
+            </div>
+            <div class="result-item ${unit === 'c' ? 'highlight' : ''}">
+                <span class="result-label">Celsius</span>
+                <span class="result-value">${this.formatNumber(result.celsius, 2)} °C</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Kelvin</span>
+                <span class="result-value">${this.formatNumber(result.kelvin, 2)} K</span>
+            </div>
+        `);
+    },
+
+    calculatePressConversion: function() {
+        const value = parseFloat(document.getElementById('pressInput').value);
+        const unit = document.getElementById('pressUnit').value;
+
+        const result = Calculations.convertPressure(value, unit);
+
+        this.showResult('pressResult', `
+            <h4>Pressure Conversion Results</h4>
+            <div class="result-item ${unit === 'psi' ? 'highlight' : ''}">
+                <span class="result-label">PSI</span>
+                <span class="result-value">${this.formatNumber(result.psi, 2)}</span>
+            </div>
+            <div class="result-item ${unit === 'kpa' ? 'highlight' : ''}">
+                <span class="result-label">kPa</span>
+                <span class="result-value">${this.formatNumber(result.kpa, 2)}</span>
+            </div>
+            <div class="result-item ${unit === 'bar' ? 'highlight' : ''}">
+                <span class="result-label">Bar</span>
+                <span class="result-value">${this.formatNumber(result.bar, 4)}</span>
+            </div>
+            <div class="result-item ${unit === 'atm' ? 'highlight' : ''}">
+                <span class="result-label">ATM</span>
+                <span class="result-value">${this.formatNumber(result.atm, 4)}</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">MPa</span>
+                <span class="result-value">${this.formatNumber(result.mpa, 4)}</span>
+            </div>
+        `);
+    },
+
+    // ===========================================
+    // BHA REFERENCE CALCULATOR
+    // ===========================================
+
+    calculateSensorDepth: function() {
+        const bitDepth = parseFloat(document.getElementById('bitDepth').value);
+        const offset = parseFloat(document.getElementById('sensorOffset').value);
+
+        const result = Calculations.sensorDepth(bitDepth, offset);
+
+        this.showResult('sensorDepthResult', `
+            <h4>Sensor Depth Results</h4>
+            <div class="highlight">
+                <strong>Survey Depth: ${this.formatNumber(result.surveyDepth, 1)} ft</strong>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Bit Depth</span>
+                <span class="result-value">${this.formatNumber(result.bitDepth, 1)} ft</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Sensor Offset</span>
+                <span class="result-value">${this.formatNumber(result.sensorOffset, 1)} ft</span>
             </div>
         `);
     }

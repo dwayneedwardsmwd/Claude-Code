@@ -33,6 +33,11 @@
             <li><a href="#" data-section="nozzle">Bit Nozzle/TFA</a></li>
             <li><a href="#" data-section="mudweight">Mud Weight Conversions</a></li>
             <li><a href="#" data-section="tripslug">Trip/Slug Calculator</a></li>
+            <li><a href="#" data-section="survey">Survey/Directional</a></li>
+            <li><a href="#" data-section="motoryield">Motor Yield/Slide</a></li>
+            <li><a href="#" data-section="magnetic">Magnetic Reference</a></li>
+            <li><a href="#" data-section="converter">Unit Converter</a></li>
+            <li><a href="#" data-section="bha">BHA Reference</a></li>
         </ul>
     </nav>
 
@@ -666,6 +671,487 @@
                     </div>
                     <button class="btn-primary" id="calcKWM">Calculate Kill Weight</button>
                     <div id="kwmResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Survey/Directional Section -->
+        <section id="survey" class="section">
+            <div class="card">
+                <h2>Survey & Directional Calculations</h2>
+                <p class="section-desc">Dogleg severity, toolface, build/turn rates, and survey projections.</p>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="dogleg">Dogleg Severity</button>
+                        <button class="tab-btn" data-tab="toolface">Toolface</button>
+                        <button class="tab-btn" data-tab="buildturn">Build/Turn Rate</button>
+                        <button class="tab-btn" data-tab="projection">Projection</button>
+                    </div>
+
+                    <div class="tab-content active" id="dogleg">
+                        <div class="calculator">
+                            <h3>Dogleg Severity Calculator</h3>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="dls1Inc">Survey 1 Inclination (°)</label>
+                                    <input type="number" id="dls1Inc" value="15" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="dls1Azi">Survey 1 Azimuth (°)</label>
+                                    <input type="number" id="dls1Azi" value="125" step="0.01">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="dls2Inc">Survey 2 Inclination (°)</label>
+                                    <input type="number" id="dls2Inc" value="18" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="dls2Azi">Survey 2 Azimuth (°)</label>
+                                    <input type="number" id="dls2Azi" value="130" step="0.01">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="dlsCL">Course Length (ft)</label>
+                                <input type="number" id="dlsCL" value="94" step="1">
+                            </div>
+                            <button class="btn-primary" id="calcDLS">Calculate DLS</button>
+                            <div id="dlsResult" class="result-box"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="toolface">
+                        <div class="calculator">
+                            <h3>Toolface Conversion</h3>
+                            <p>Convert between Gravity Toolface (GTF) and Magnetic Toolface (MTF).</p>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="tfInc">Inclination (°)</label>
+                                    <input type="number" id="tfInc" value="45" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="tfAzi">Azimuth (°)</label>
+                                    <input type="number" id="tfAzi" value="180" step="0.1">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="tfValue">Toolface Value (°)</label>
+                                    <input type="number" id="tfValue" value="30" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="tfType">Toolface Type</label>
+                                    <select id="tfType">
+                                        <option value="gtf">GTF (Gravity) → MTF</option>
+                                        <option value="mtf">MTF (Magnetic) → GTF</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="calcTF">Convert Toolface</button>
+                            <div id="tfResult" class="result-box"></div>
+
+                            <div class="info-box">
+                                <strong>Quick Reference:</strong>
+                                <ul>
+                                    <li>GTF 0° = High Side (building)</li>
+                                    <li>GTF 90° = Right Side</li>
+                                    <li>GTF 180° = Low Side (dropping)</li>
+                                    <li>GTF 270° = Left Side</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="buildturn">
+                        <div class="calculator">
+                            <h3>Build & Turn Rate from Surveys</h3>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="bt1Inc">Survey 1 Inc (°)</label>
+                                    <input type="number" id="bt1Inc" value="15" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="bt1Azi">Survey 1 Azi (°)</label>
+                                    <input type="number" id="bt1Azi" value="125" step="0.01">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="bt2Inc">Survey 2 Inc (°)</label>
+                                    <input type="number" id="bt2Inc" value="18" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="bt2Azi">Survey 2 Azi (°)</label>
+                                    <input type="number" id="bt2Azi" value="130" step="0.01">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="btCL">Course Length (ft)</label>
+                                <input type="number" id="btCL" value="94" step="1">
+                            </div>
+                            <button class="btn-primary" id="calcBT">Calculate Build/Turn</button>
+                            <div id="btResult" class="result-box"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="projection">
+                        <div class="calculator">
+                            <h3>Survey Projection</h3>
+                            <p>Project ahead from current survey using expected DLS and toolface.</p>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="projInc">Current Inc (°)</label>
+                                    <input type="number" id="projInc" value="25" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="projAzi">Current Azi (°)</label>
+                                    <input type="number" id="projAzi" value="180" step="0.01">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="projDLS">Expected DLS (°/100ft)</label>
+                                    <input type="number" id="projDLS" value="3" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="projTF">Toolface (°)</label>
+                                    <input type="number" id="projTF" value="0" step="1">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="projDist">Projection Distance (ft)</label>
+                                <input type="number" id="projDist" value="100" step="10">
+                            </div>
+                            <button class="btn-primary" id="calcProj">Calculate Projection</button>
+                            <div id="projResult" class="result-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motor Yield/Slide Section -->
+        <section id="motoryield" class="section">
+            <div class="card">
+                <h2>Motor Yield & Slide Calculator</h2>
+                <p class="section-desc">Calculate slide footage and expected build/turn rates.</p>
+
+                <div class="calculator">
+                    <h3>Slide Sheet Calculator</h3>
+                    <p>Calculate required slide percentage to achieve target.</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="slideMotorYield">Motor Yield (°/100ft)</label>
+                            <input type="number" id="slideMotorYield" value="12" step="0.5">
+                        </div>
+                        <div class="input-group">
+                            <label for="slideTargetDLS">Target DLS (°/100ft)</label>
+                            <input type="number" id="slideTargetDLS" value="6" step="0.1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="slideInterval">Drill Interval (ft)</label>
+                        <input type="number" id="slideInterval" value="94" step="1">
+                    </div>
+                    <button class="btn-primary" id="calcSlide">Calculate Slide</button>
+                    <div id="slideResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Motor Bend Angle Reference</h3>
+                    <p>Estimate motor yield based on bend setting.</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="bendAngle">Bend Angle (°)</label>
+                            <select id="bendAngle">
+                                <option value="0.5">0.5°</option>
+                                <option value="1.0">1.0°</option>
+                                <option value="1.15" selected>1.15°</option>
+                                <option value="1.5">1.5°</option>
+                                <option value="2.0">2.0°</option>
+                                <option value="2.5">2.5°</option>
+                                <option value="3.0">3.0°</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="motorBitToBend">Bit to Bend (ft)</label>
+                            <input type="number" id="motorBitToBend" value="3.5" step="0.1">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcMotorYield">Estimate Yield</button>
+                    <div id="motorYieldResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Expected Build/Turn from Slide</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="expMotorYield">Motor Yield (°/100ft)</label>
+                            <input type="number" id="expMotorYield" value="12" step="0.5">
+                        </div>
+                        <div class="input-group">
+                            <label for="expToolface">Toolface (°)</label>
+                            <input type="number" id="expToolface" value="30" step="1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="expSlideFootage">Slide Footage (ft)</label>
+                        <input type="number" id="expSlideFootage" value="30" step="1">
+                    </div>
+                    <button class="btn-primary" id="calcExpBT">Calculate Expected Build/Turn</button>
+                    <div id="expBTResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Magnetic Reference Section -->
+        <section id="magnetic" class="section">
+            <div class="card">
+                <h2>Magnetic Reference Calculator</h2>
+                <p class="section-desc">Calculate magnetic declination, grid convergence, and total correction.</p>
+
+                <div class="calculator">
+                    <h3>Total Correction Angle</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="magDeclination">Magnetic Declination (°)</label>
+                            <input type="number" id="magDeclination" value="-12.5" step="0.1">
+                            <small>East = Positive, West = Negative</small>
+                        </div>
+                        <div class="input-group">
+                            <label for="magConvergence">Grid Convergence (°)</label>
+                            <input type="number" id="magConvergence" value="1.2" step="0.1">
+                            <small>East = Positive, West = Negative</small>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcMagRef">Calculate Total Correction</button>
+                    <div id="magRefResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Azimuth Conversions</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="aziInput">Azimuth (°)</label>
+                            <input type="number" id="aziInput" value="180" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="aziType">Input Type</label>
+                            <select id="aziType">
+                                <option value="mag">Magnetic Azimuth</option>
+                                <option value="true">True Azimuth</option>
+                                <option value="grid">Grid Azimuth</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="aziDec">Declination (°)</label>
+                            <input type="number" id="aziDec" value="-12.5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="aziConv">Convergence (°)</label>
+                            <input type="number" id="aziConv" value="1.2" step="0.1">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcAziConv">Convert Azimuth</button>
+                    <div id="aziConvResult" class="result-box"></div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Formulas:</strong>
+                    <ul>
+                        <li><strong>True Azi</strong> = Magnetic Azi + Declination</li>
+                        <li><strong>Grid Azi</strong> = True Azi - Convergence</li>
+                        <li><strong>Grid Azi</strong> = Magnetic Azi + Total Correction</li>
+                        <li><strong>Total Correction</strong> = Declination - Convergence</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit Converter Section -->
+        <section id="converter" class="section">
+            <div class="card">
+                <h2>Unit Converter</h2>
+                <p class="section-desc">Quick conversions for field use.</p>
+
+                <div class="calculator">
+                    <h3>Decimal ↔ Fraction</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="decFracInput">Enter Value</label>
+                            <input type="text" id="decFracInput" value="0.375" placeholder="0.375 or 3/8">
+                        </div>
+                        <div class="input-group">
+                            <label for="fracDenom">Denominator (for decimal)</label>
+                            <select id="fracDenom">
+                                <option value="8">8ths</option>
+                                <option value="16">16ths</option>
+                                <option value="32" selected>32nds</option>
+                                <option value="64">64ths</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcDecFrac">Convert</button>
+                    <div id="decFracResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Length Conversion</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="lengthInput">Value</label>
+                            <input type="number" id="lengthInput" value="1000" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="lengthUnit">From Unit</label>
+                            <select id="lengthUnit">
+                                <option value="ft" selected>Feet</option>
+                                <option value="m">Meters</option>
+                                <option value="in">Inches</option>
+                                <option value="cm">Centimeters</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcLength">Convert</button>
+                    <div id="lengthResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Temperature Conversion</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="tempInput">Value</label>
+                            <input type="number" id="tempInput" value="150" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="tempUnit">From Unit</label>
+                            <select id="tempUnit">
+                                <option value="f" selected>Fahrenheit (°F)</option>
+                                <option value="c">Celsius (°C)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcTemp">Convert</button>
+                    <div id="tempResult" class="result-box"></div>
+                </div>
+
+                <div class="calculator">
+                    <h3>Pressure Conversion</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="pressInput">Value</label>
+                            <input type="number" id="pressInput" value="3000" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="pressUnit">From Unit</label>
+                            <select id="pressUnit">
+                                <option value="psi" selected>PSI</option>
+                                <option value="kpa">kPa</option>
+                                <option value="bar">Bar</option>
+                                <option value="atm">ATM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcPress">Convert</button>
+                    <div id="pressResult" class="result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BHA Reference Section -->
+        <section id="bha" class="section">
+            <div class="card">
+                <h2>BHA Reference</h2>
+                <p class="section-desc">Common BHA component specifications and sensor offsets.</p>
+
+                <div class="calculator">
+                    <h3>Sensor Offset Calculator</h3>
+                    <p>Calculate survey depth from bit depth.</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="bitDepth">Bit Depth (ft)</label>
+                            <input type="number" id="bitDepth" value="10000" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="sensorOffset">Sensor Offset (ft)</label>
+                            <input type="number" id="sensorOffset" value="52" step="0.1">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calcSensorDepth">Calculate Survey Depth</button>
+                    <div id="sensorDepthResult" class="result-box"></div>
+                </div>
+
+                <h3>Common Sensor Offsets</h3>
+                <div class="table-responsive">
+                    <table class="data-table" id="sensorOffsetTable">
+                        <thead>
+                            <tr>
+                                <th>Tool Type</th>
+                                <th>Typical Offset (ft)</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Standard MWD</td><td>45-55</td><td>Varies by collar length</td></tr>
+                            <tr><td>Short Collar MWD</td><td>35-42</td><td>Slim hole tools</td></tr>
+                            <tr><td>LWD Gamma</td><td>8-15</td><td>Near bit gamma</td></tr>
+                            <tr><td>LWD Resistivity</td><td>15-25</td><td>Varies by array length</td></tr>
+                            <tr><td>LWD Density</td><td>10-18</td><td>Source to detector</td></tr>
+                            <tr><td>RSS</td><td>5-12</td><td>Varies by manufacturer</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Common BHA Components</h3>
+                <div class="table-responsive">
+                    <table class="data-table" id="bhaComponentTable">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Typical Length (ft)</th>
+                                <th>OD Range (in)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>PDC Bit</td><td>0.8-1.2</td><td>4.75-17.5</td></tr>
+                            <tr><td>Bit Sub</td><td>2-3</td><td>4.75-9.5</td></tr>
+                            <tr><td>Motor (7-3/4" OD)</td><td>25-30</td><td>7.75</td></tr>
+                            <tr><td>Motor (6-3/4" OD)</td><td>22-27</td><td>6.75</td></tr>
+                            <tr><td>Motor (4-3/4" OD)</td><td>18-22</td><td>4.75</td></tr>
+                            <tr><td>MWD Collar</td><td>28-32</td><td>6.5-8.25</td></tr>
+                            <tr><td>Float Sub</td><td>2-3</td><td>4.75-8.25</td></tr>
+                            <tr><td>Stabilizer</td><td>4-8</td><td>Varies</td></tr>
+                            <tr><td>Non-mag Collar</td><td>30-31</td><td>6.5-8.25</td></tr>
+                            <tr><td>Shock Sub</td><td>4-6</td><td>6.5-8.25</td></tr>
+                            <tr><td>Crossover Sub</td><td>2-3</td><td>Varies</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Drill Collar Weights</h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>OD (in)</th>
+                                <th>ID (in)</th>
+                                <th>Weight (lb/ft)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>4-3/4</td><td>2-1/4</td><td>46</td></tr>
+                            <tr><td>6-1/4</td><td>2-13/16</td><td>83</td></tr>
+                            <tr><td>6-3/4</td><td>2-13/16</td><td>99</td></tr>
+                            <tr><td>7</td><td>2-13/16</td><td>108</td></tr>
+                            <tr><td>7-3/4</td><td>2-13/16</td><td>136</td></tr>
+                            <tr><td>8</td><td>2-13/16</td><td>147</td></tr>
+                            <tr><td>8-1/4</td><td>2-13/16</td><td>158</td></tr>
+                            <tr><td>9-1/2</td><td>3</td><td>212</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
