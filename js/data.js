@@ -1,6 +1,26 @@
 // MWD Engineer Toolbox - Reference Data
 
-// Poppit Orifice Data
+// Mud Pulse Flow Configuration - Poppet Orifice Selection Chart
+// Known good setups for mud pulse MWD tools
+const MUD_PULSE_FLOW_CONFIG = [
+    { flowRangeM3: '0.5 - 0.75', flowRangeGPM: '130 - 200', flowMinGPM: 130, flowMaxGPM: 200, poppet: 1.12, orifice: 1.25 },
+    { flowRangeM3: '0.75 - 1.00', flowRangeGPM: '200 - 260', flowMinGPM: 200, flowMaxGPM: 260, poppet: 1.12, orifice: 1.28 },
+    { flowRangeM3: '1.00 - 1.25', flowRangeGPM: '260 - 330', flowMinGPM: 260, flowMaxGPM: 330, poppet: 1.12, orifice: 1.31 },
+    { flowRangeM3: '1.25 - 1.50', flowRangeGPM: '330 - 400', flowMinGPM: 330, flowMaxGPM: 400, poppet: 1.12, orifice: 1.35 },
+    { flowRangeM3: '1.50 - 1.75', flowRangeGPM: '400 - 460', flowMinGPM: 400, flowMaxGPM: 460, poppet: 1.12, orifice: 1.4 },
+    { flowRangeM3: '1.75 - 2.00', flowRangeGPM: '460 - 530', flowMinGPM: 460, flowMaxGPM: 530, poppet: 1.085, orifice: 1.4 },
+    { flowRangeM3: '2.00 - 2.50', flowRangeGPM: '530 - 660', flowMinGPM: 530, flowMaxGPM: 660, poppet: 1.12, orifice: 1.4 },
+    { flowRangeM3: '2.50 - 2.75', flowRangeGPM: '660 - 730', flowMinGPM: 660, flowMaxGPM: 730, poppet: 1.085, orifice: 1.5 },
+    { flowRangeM3: '2.75 - 3.00', flowRangeGPM: '730 - 800', flowMinGPM: 730, flowMaxGPM: 800, poppet: 1.12, orifice: 1.6 }
+];
+
+// Available Poppet Sizes (inches)
+const POPPET_SIZES = [1.085, 1.12];
+
+// Available Orifice Sizes (inches)
+const ORIFICE_SIZES = [1.25, 1.28, 1.31, 1.35, 1.4, 1.5, 1.6];
+
+// Legacy Poppit Orifice Data (for general reference)
 const POPPIT_ORIFICE_DATA = [
     { size: 0.125, thirtySeconds: 4, area: 0.0123, cv: 0.15, flowRange: '20-50' },
     { size: 0.156, thirtySeconds: 5, area: 0.0191, cv: 0.23, flowRange: '30-75' },
@@ -165,6 +185,9 @@ const CASING_DATA = [
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        MUD_PULSE_FLOW_CONFIG,
+        POPPET_SIZES,
+        ORIFICE_SIZES,
         POPPIT_ORIFICE_DATA,
         PIPE_CONNECTIONS_DATA,
         DRILL_PIPE_DATA,

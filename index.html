@@ -81,37 +81,39 @@
         <!-- Poppit Orifice Selection Section -->
         <section id="poppit" class="section">
             <div class="card">
-                <h2>Poppit Orifice Selection</h2>
-                <p class="section-desc">Select the appropriate poppit orifice based on your flow rate and pressure requirements.</p>
+                <h2>Mud Pulse Flow Configuration</h2>
+                <p class="section-desc">Poppet and orifice selection for mud pulse MWD tools based on flow rate.</p>
 
                 <div class="calculator">
                     <div class="input-group">
                         <label for="poppitFlowRate">Flow Rate (GPM)</label>
-                        <input type="number" id="poppitFlowRate" placeholder="Enter flow rate" step="1">
+                        <input type="number" id="poppitFlowRate" placeholder="Enter flow rate (130-800 GPM)" step="1">
                     </div>
                     <div class="input-group">
-                        <label for="poppitPressure">Available Pressure Drop (PSI)</label>
-                        <input type="number" id="poppitPressure" placeholder="Enter pressure drop" step="10">
+                        <label for="mudType">Mud Type</label>
+                        <select id="mudType">
+                            <option value="standard">Standard (Water-Based)</option>
+                            <option value="invert">Invert (Oil-Based)</option>
+                        </select>
                     </div>
-                    <div class="input-group">
-                        <label for="poppitMudWeight">Mud Weight (PPG)</label>
-                        <input type="number" id="poppitMudWeight" placeholder="Enter mud weight" step="0.1" value="10">
-                    </div>
-                    <button class="btn-primary" id="calcPoppit">Calculate Recommended Orifice</button>
+                    <button class="btn-primary" id="calcPoppit">Get Recommended Configuration</button>
 
                     <div id="poppitResult" class="result-box"></div>
                 </div>
 
-                <h3>Standard Poppit Orifice Reference Chart</h3>
+                <div class="info-box">
+                    <strong>Note:</strong> Increase poppet one size for invert drilling fluid or at least one size for agitator.
+                </div>
+
+                <h3>Poppet Orifice Selection Chart</h3>
                 <div class="table-responsive">
                     <table class="data-table" id="poppitTable">
                         <thead>
                             <tr>
-                                <th>Orifice Size (inches)</th>
-                                <th>Orifice Size (32nds)</th>
-                                <th>Area (in²)</th>
-                                <th>Cv Factor</th>
-                                <th>Typical Flow Range (GPM)</th>
+                                <th>Flow Range (m³/min)</th>
+                                <th>Flow Range (GPM)</th>
+                                <th>Poppet (inches)</th>
+                                <th>Orifice (inches)</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -130,20 +130,19 @@ const App = {
     },
 
     /**
-     * Populate poppit orifice reference table
+     * Populate mud pulse flow configuration table
      */
     populatePoppitTable: function() {
         const tbody = document.querySelector('#poppitTable tbody');
         tbody.innerHTML = '';
 
-        POPPIT_ORIFICE_DATA.forEach(orifice => {
+        MUD_PULSE_FLOW_CONFIG.forEach(config => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${orifice.size.toFixed(3)}</td>
-                <td>${orifice.thirtySeconds}/32"</td>
-                <td>${orifice.area.toFixed(4)}</td>
-                <td>${orifice.cv.toFixed(2)}</td>
-                <td>${orifice.flowRange}</td>
+                <td>${config.flowRangeM3}</td>
+                <td>${config.flowRangeGPM}</td>
+                <td><strong>${config.poppet}"</strong></td>
+                <td><strong>${config.orifice}"</strong></td>
             `;
             tbody.appendChild(row);
         });
@@ -318,33 +317,58 @@ const App = {
 
     calculatePoppit: function() {
         const flowRate = parseFloat(document.getElementById('poppitFlowRate').value);
-        const pressure = parseFloat(document.getElementById('poppitPressure').value);
-        const mudWeight = parseFloat(document.getElementById('poppitMudWeight').value);
+        const mudType = document.getElementById('mudType').value;
 
-        if (!flowRate || !pressure || !mudWeight) {
-            this.showResult('poppitResult', '<p style="color: red;">Please enter all values</p>');
+        if (!flowRate) {
+            this.showResult('poppitResult', '<p style="color: red;">Please enter a flow rate</p>');
             return;
         }
 
-        const result = Calculations.recommendOrifice(flowRate, mudWeight, pressure);
+        if (flowRate < 130 || flowRate > 800) {
+            this.showResult('poppitResult', '<p style="color: red;">Flow rate must be between 130-800 GPM</p>');
+            return;
+        }
+
+        // Find the matching configuration
+        let config = MUD_PULSE_FLOW_CONFIG.find(c => flowRate >= c.flowMinGPM && flowRate < c.flowMaxGPM);
+
+        // Handle edge case for max flow rate
+        if (!config && flowRate === 800) {
+            config = MUD_PULSE_FLOW_CONFIG[MUD_PULSE_FLOW_CONFIG.length - 1];
+        }
+
+        if (!config) {
+            this.showResult('poppitResult', '<p style="color: red;">No configuration found for this flow rate</p>');
+            return;
+        }
+
+        // Adjust for invert mud - increase poppet size
+        let poppetSize = config.poppet;
+        let poppetNote = '';
+        if (mudType === 'invert') {
+            // Increase poppet one size for invert
+            poppetSize = 1.12; // Use larger poppet for invert
+            poppetNote = '<div class="highlight warning"><strong>Invert Mud:</strong> Using larger poppet size (1.12") as recommended</div>';
+        }
 
         this.showResult('poppitResult', `
-            <h4>Recommended Orifice</h4>
+            <h4>Recommended Configuration</h4>
             <div class="result-item">
-                <span class="result-label">Required Area</span>
-                <span class="result-value">${this.formatNumber(result.requiredArea, 4)} in²</span>
+                <span class="result-label">Flow Rate</span>
+                <span class="result-value">${flowRate} GPM</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Flow Range</span>
+                <span class="result-value">${config.flowRangeGPM} GPM (${config.flowRangeM3} m³/min)</span>
             </div>
             <div class="highlight">
-                <strong>Recommended: ${result.recommended.thirtySeconds}/32" (${result.recommended.size.toFixed(3)}")</strong>
-                <br>Area: ${this.formatNumber(result.recommended.area, 4)} in²
+                <strong>Poppet: ${poppetSize}"</strong><br>
+                <strong>Orifice: ${config.orifice}"</strong>
             </div>
+            ${poppetNote}
             <div class="result-item">
-                <span class="result-label">Actual Pressure Drop</span>
-                <span class="result-value">${this.formatNumber(result.actualPressureDrop)} PSI</span>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Typical Flow Range</span>
-                <span class="result-value">${result.recommended.flowRange} GPM</span>
+                <span class="result-label">Mud Type</span>
+                <span class="result-value">${mudType === 'invert' ? 'Invert (Oil-Based)' : 'Standard (Water-Based)'}</span>
             </div>
         `);
     },
